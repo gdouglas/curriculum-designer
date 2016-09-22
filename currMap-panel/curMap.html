@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Curriculum Map Builder</title>
+    <meta content="Curriculum Map Demo" name="description">
+    <meta content="Graham Douglas" name="author">
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="js/script.js"></script>
+</head>
+<body>
+    <h1>Curriculum builder</h1>
+    <div class="row controls">
+      <div class="container-fluid">
+        <div class="row">
+            <fieldset class="cohort col-md-4">
+              <label>Select a Cohort to view that Cohort</label>
+              <select id="cohort-chooser" class="selectpicker form-control">
+                <option value="2016">Class of 2016</option>
+                <option value="2017">Class of 2017</option>
+                <option value="2018">Class of 2018</option>
+                <option value="2019">Class of 2019</option>
+                <option value="2020">Class of 2020</option>
+                <option value="2021">Class of 2021</option>
+                <option value="add">Add a cohort</option>
+              </select>
+            </fieldset>
+          </div>
+          <div class="row">
+            <fieldset class="curriculum-layout col-md-4">
+              <label>Select a Curriculum Layout to view and edit all instances of a period</label>
+              <select id="curriculum-layout-select" class="selectpicker form-control">
+                <option value="2016">Year 1</option>
+                <option value="2017">Year 2</option>
+                <option value="2018">Year 3</option>
+                <option value="2019">Year 4</option>
+              </select>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+</body>
+</html>

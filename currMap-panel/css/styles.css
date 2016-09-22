@@ -1,0 +1,28 @@
+.item{
+	background: rgba(12,35,68,.2);
+	display: table-cell;
+	border: 1px solid;
+	text-align: center;
+	padding:10px 10px 0 10px;
+	min-height:60px;
+}
+.glyphicon-new-window {
+	color:#97d4e9;
+}
+.item p{
+	background:#0055b7;
+	color:#fff;
+	margin:0;
+}
+
+.event .btn-plus{
+	display:none;
+}
+.controls {
+	background:#4084e5;
+	padding:5px;
+}
+
+#map1{
+	display:none;
+}
