@@ -27,7 +27,7 @@ function updateItem(){
 
 
 
-  
+
 var p = "program";
 $(document).ready(function(){
   // listenForCourseClick(elem);
@@ -77,7 +77,7 @@ function createChild(e){
 }
 
 function listenForCourseClicks(elem){
-    
+
   $('#'+elem+" .btn-plus").on("click", function(e){
     createChild(e);
   });
@@ -88,6 +88,17 @@ function listenForCourseClicks(elem){
   $('#'+elem+" .btn-collapse").on("click", function(e){
     var elems = $(e.target).closest('.item').children('.item');
     elems.toggle();
+  });
+
+  //select menu
+  $('#cohort-chooser').on('change',function(e){
+    var cohort = $(this).val();
+    filterCohort("class",cohort)
+  });
+  $('#curriculum-layout-select').on('change',function(e){
+    var cohort = $(this).val();
+    console.log(cohort);
+    filterCohort("year",cohort)
   });
 }
 
@@ -105,3 +116,38 @@ function createSlug(k){
     .replace(/\-\-+/g, '-')         // Replace multiple - with single -
     .replace(/^-+/, '')+n;            // Trim - from end of text
 }
+
+function filterCohort(target, cohort) {
+  switch (cohort) {
+    case "all":
+    $('*[data-'+target+']').show();
+      return
+    case "add":
+      return
+    default:
+      applyFilter(target, cohort);
+  }
+
+}
+
+function applyFilter(target,cohort) {
+  console.log(target);
+  var string = "(^|,)"+cohort+"(,|$)";
+  var re = new RegExp(string,'g');
+  $('*[data-'+target+']').hide();
+  $('*[data-'+target+']')
+    .filter( function(){
+      if ( $(this).attr('data-'+target+'').match(re) ){
+        //show if there is a match
+        return true;
+      } else {
+        //leave hiden if there is no match
+        return false;
+      }
+    })
+    .show();
+}
+
+
+// Regex from stackoverflow answer:
+// http://stackoverflow.com/questions/7344361/how-to-select-elements-with-jquery-that-have-a-certain-value-in-a-data-attribute
