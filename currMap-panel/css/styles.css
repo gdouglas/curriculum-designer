@@ -1,10 +1,21 @@
+ul{
+	padding:0;
+}
 .item{
 	background: rgba(12,35,68,.2);
-	display: table-cell;
 	border: 1px solid;
-	text-align: center;
+	text-align: left;
+	list-style-type: none;
 	padding:10px 10px 0 10px;
 	min-height:60px;
+	margin-bottom:3px;
+	cursor: pointer;
+}
+dd.item{
+	background: rgba(12,35,68,.1);
+	width:50%;
+	display:inline-block;
+	float:left;
 }
 .glyphicon-new-window {
 	color:#97d4e9;
@@ -27,4 +38,17 @@
 
 #map1{
 	display:none;
+}
+.active {
+	background:#40B4E5;
+}
+dt.item {
+	margin-bottom:0;
+	clear:both;
+}
+.events dd{
+	width:100%;
+}
+dd.active{
+	background:#40B4E5;
 }

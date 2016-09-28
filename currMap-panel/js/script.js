@@ -1,95 +1,12 @@
-var text="";
-var textSlug = "";
-var level="";
-var num = 0;
-var item;
-
-
-function updateItem(){
-   return '<div id="'+textSlug+'" class="item '+level+'"+ data-level="'+level+'">'+
-'  <div>'+
-'    <div class="controls">'+
-'        <button class="btn btn-default btn-minus" data-level="program"'+
-'        type="button"><span class='+
-'        "glyphicon glyphicon-minus"></span></button>'+
-'        <button class='+
-'        "btn btn-default btn-number btn-plus" data-level="program"'+
-'        type="button"><span class="glyphicon glyphicon-plus"></span></button>'+
-'        <button class="btn btn-default btn-number btn-collapse"'+
-'        type="button"><span class="glyphicon glyphicon-sort"></span></button>'+
-'    </div>'+
-    '<p contenteditable="true">'+text+'<a href="#" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a></p>'+
-'  </div>'+
-'</div>';
-}
-
-
-
-
-
-
-var p = "program";
 $(document).ready(function(){
-  // listenForCourseClick(elem);
-  listenForCourseClicks(p);
   $('#currMapSwitcher').on('change', function(e){
     $('#maps div[id ^= "map"]').hide();
     $('[id ^= "'+this.value+'"]').show();
-    console.log(this.value);
   });
+  listenForCourseClicks();
 });
 
-
-function createChild(e){
-  var sourceID = $(e.target).closest('.item').attr("id");
-  var sourceElem = $(e.target).closest('.item');
-  level = sourceElem.data("level");
-  var container = "";
-  switch (level) {
-    case "program":
-      text= prompt("Please enter the year", "Year ");
-      level ="year";
-      break;
-    case "year":
-      text= prompt("Please enter the Course Name", "Med 410 ");
-      level="course";
-      break;
-    case "course":
-      text= prompt("What is the week","1");
-      level="week";
-      break;
-    case "week":
-      text= prompt("What is the name of the event", "Lecture");
-      level="event";
-      break;
-    case "event":
-      alert("Events cannot contain items");
-      return;
-    default:
-      alert("Error: Cannot create item");
-      return;
-  }
-  textSlug = createSlug(text);
-  item = updateItem();
-  sourceElem.append(item);
-  listenForCourseClicks(textSlug);
-
-}
-
 function listenForCourseClicks(elem){
-
-  $('#'+elem+" .btn-plus").on("click", function(e){
-    createChild(e);
-  });
-  $('#'+elem+" .btn-minus").on("click", function(e){
-    var sourceElem = $(e.target).closest('.item');
-    sourceElem.remove();
-  });
-  $('#'+elem+" .btn-collapse").on("click", function(e){
-    var elems = $(e.target).closest('.item').children('.item');
-    elems.toggle();
-  });
-
   //select menu
   $('#cohort-chooser').on('change',function(e){
     var cohort = $(this).val();
@@ -97,24 +14,71 @@ function listenForCourseClicks(elem){
   });
   $('#curriculum-layout-select').on('change',function(e){
     var cohort = $(this).val();
-    console.log(cohort);
     filterCohort("year",cohort)
   });
-}
+  $('body').on('click', function(e){
+    console.log("click");
+    $('.active').removeClass("active");
+  });
+  $('dd,dt,li').on('click', {event}, highlightRelated);
+  $('.btn-cal').on('click',function(e){
+    e.stopPropagation();
+    alert("This will allow you to filter the events based on date.")
+  });
+  $('.btn-plus').on('click',function(e){
+    e.stopPropagation();
+    alert("This will allow you to add a new item to the list below. I'm not sure what we need to capture in here besige title.")
+  });
+  $('.glyphicon-wrench').on('click',function(e){
+    e.stopPropagation();
 
-function removeItem(e){
-  e.removeChild();
-}
+    vex.dialog.open({
+        message: 'Set the linkages for this item here:',
+        input: [
+            'Year <input name="username" type="text" placeholder="Year" required />',
+            'Courses <input name="password" type="text" placeholder="Courses" required />',
+            'Weeks <input name="password" type="text" placeholder="Weeks" required />',
+            'Learning Events <input name="password" type="text" placeholder="Event" required />'
+        ].join(''),
+        buttons: [
+            $.extend({}, vex.dialog.buttons.YES, { text: 'Save' }),
+            $.extend({}, vex.dialog.buttons.NO, { text: 'Cancel' })
+        ],
+        callback: function (data) {
+            if (!data) {
+                console.log('Cancelled')
+            } else {
+                console.log('Username', data.username, 'Password', data.password)
+            }
+        }
+    })
 
-function createSlug(k){
-  //strip out whitespace and add time to create a unique id
-  var d = new Date();
-  var n = d.getTime();
-  return k.toString().toLowerCase()
-    .replace(/\s+/g, '-')           // Replace spaces with -
-    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-    .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-    .replace(/^-+/, '')+n;            // Trim - from end of text
+
+  });
+}
+/*on course, week or learning event click match all items and add a active class*/
+
+function highlightRelated(e){
+  e.stopPropagation();
+  var t = e.target;
+  var data = $(t).data();
+  var arr = [];
+  $(".active").removeClass("active");
+  //loop through each property of the object and build an array from the contents, split on , the loop through each array as a selector and highlight everything
+  for (var key in data) {
+    if (data.hasOwnProperty(key)) {
+      if (data[key].length > 1) {
+        arr = data[key].split(',');
+      } else {
+        arr.push( data[key] );
+      }
+      for (var i = 0; i < arr.length; i++) {
+          addActive(key, arr[i]);
+        // console.log('*[data-'+key+'="'+arr[i]+'"]');
+        // $('*[data-'+key+'="'+arr[i]+'"]').addClass("active");
+      }
+    }
+  }
 }
 
 function filterCohort(target, cohort) {
@@ -129,9 +93,22 @@ function filterCohort(target, cohort) {
   }
 
 }
-
+function addActive(target,cohort) {
+  var string = "(^|,)"+cohort+"(,|$)";
+  var re = new RegExp(string,'g');
+  $('*[data-'+target+']')
+    .filter( function(){
+      if ( $(this).attr('data-'+target+'').match(re) ){
+        //show if there is a match
+        return true;
+      } else {
+        //leave hiden if there is no match
+        return false;
+      }
+    })
+    .addClass("active");
+}
 function applyFilter(target,cohort) {
-  console.log(target);
   var string = "(^|,)"+cohort+"(,|$)";
   var re = new RegExp(string,'g');
   $('*[data-'+target+']').hide();
@@ -145,7 +122,7 @@ function applyFilter(target,cohort) {
         return false;
       }
     })
-    .show();
+    .show().addClass("active");
 }
 
 
