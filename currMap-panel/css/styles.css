@@ -39,8 +39,14 @@ dd.item{
 #map1{
 	display:none;
 }
+.hiden{
+	height: 0;
+	visibility: 0;
+}
 .active {
+	height:60px;
 	background:#40B4E5;
+	visibility: 1;
 }
 dt.item {
 	margin-bottom:0;
