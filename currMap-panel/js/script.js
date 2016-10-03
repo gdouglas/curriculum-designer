@@ -17,7 +17,7 @@ function listenForCourseClicks(elem){
     filterCohort("year",cohort)
   });
   $('body').on('click', function(e){
-    $('.active').removeClass("active");
+    clearFilter();
   });
   $('dd,dt,li').on('click', {event}, highlightRelated);
   $('.btn-cal').on('click',function(e){
@@ -121,7 +121,7 @@ function addActive(target,cohort) {
       }
     })
     .addClass("active");
-    $('li:not([class*="active"]), dd:not([class*="active"])').animate({height:'toggle',"min-height":'toggle'});
+    hideElem($('li:not([class*="active"])'));
 }
 function applyFilter(target,cohort) {
   var string = "(^|,)"+cohort+"(,|$)";
@@ -139,7 +139,18 @@ function applyFilter(target,cohort) {
     })
     .show().addClass("active");
 }
+// Hide all non active elements and show the active ones
+// takes a jquery object
+function hideElem(elem) {
+  elem.css('min-height','0').slideUp();
+  $(".active").css('min-height','60px').slideDown();
+}
 
+function clearFilter(){
+  $('.active').removeClass("active");
+  $('li').slideDown().css('min-height','60px');
+
+}
 
 // Regex from stackoverflow answer:
 // http://stackoverflow.com/questions/7344361/how-to-select-elements-with-jquery-that-have-a-certain-value-in-a-data-attribute
