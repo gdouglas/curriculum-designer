@@ -3,11 +3,14 @@ $(document).ready(function(){
     $('#maps div[id ^= "map"]').hide();
     $('[id ^= "'+this.value+'"]').show();
   });
-  listenForCourseClicks();
+  addListeners();
 });
 
-function listenForCourseClicks(elem){
+function addListeners(elem){
   //select menu
+  $('.search').on("keyup",function(e){
+    filterList(e);
+  });
   $('#cohort-chooser').on('change',function(e){
     var cohort = $(this).val();
     filterCohort("class",cohort)
@@ -18,6 +21,7 @@ function listenForCourseClicks(elem){
   });
   $('body').on('click', function(e){
     clearFilter();
+    console.log("click");
   });
   $('dd,dt,li').on('click', {event}, highlightRelated);
   $('.btn-cal').on('click',function(e){
@@ -90,29 +94,6 @@ function highlightRelated(e){
   // use type and check all data attributes for the type, then add active if the params match
   var selected = $(t).data(type);
   addActive(type,selected);
-
-
-
-
-  //loop through each property of the object and build an array from the contents, split on , the loop through each array as a selector and highlight everything
-  // for (var key in data) {
-  //   //check against type to stop loading array with items
-  //   if (key == type) {
-  //     console.log(key+" = key");
-  //     break;
-  //   }
-  //   if (data.hasOwnProperty(key)) {
-  //     if (data[key].length > 1) {
-  //       arr = data[key].split(',');
-  //     } else {
-  //       // split won't work on arrays with only one item so just push the value
-  //       arr.push( data[key] );
-  //     }
-  //     for (var i = 0; i < arr.length; i++) {
-  //         addActive(key, arr[i]);
-  //     }
-  //   }
-  // }
 }
 
 function filterCohort(target, cohort) {
@@ -170,8 +151,19 @@ function hideElem(elem) {
 function clearFilter(){
   $('.active').removeClass("active");
   $('li').slideDown().css('min-height','60px');
-
 }
-
+function filterList(e){
+  // get the search box text and filter it's related list, set in in the data-type attribute of the search box
+  var list = $(e.target).data("type");
+  var value = $(e.currentTarget).val().toLowerCase();
+  $("."+list+" li").each(function(){
+    dis = $(this);
+    if (dis.text().toLowerCase().search(value) > -1){
+      dis.show();
+    } else {
+      dis.hide();
+    }
+  });
+}
 // Regex from stackoverflow answer:
 // http://stackoverflow.com/questions/7344361/how-to-select-elements-with-jquery-that-have-a-certain-value-in-a-data-attribute

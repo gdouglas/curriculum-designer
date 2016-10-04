@@ -1,6 +1,9 @@
 ul{
 	padding:0;
 }
+.bottom-spacing {
+	margin-bottom:12px;
+}
 .item{
 	background: rgba(12,35,68,.2);
 	border: 1px solid;
