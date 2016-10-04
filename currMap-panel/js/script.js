@@ -30,14 +30,28 @@ function listenForCourseClicks(elem){
   });
   $('.glyphicon-wrench').on('click',function(e){
     e.stopPropagation();
+    console.log("click");
+    var year    = $(e.target).closest("li").data("year"),
+        cohort  = $(e.target).closest("li").data("class"),
+        courses = $(e.target).closest("li").data("course"),
+        weeks   = $(e.target).closest("li").data("week"),
+        events  = $(e.target).closest("li").data("event"),
+        tag     = $(e.target).closest("li").data("tag");
     vex.dialog.open({
         message: 'Set the linkages for this item here:',
         input: [
-            'Year <input name="username" type="text" placeholder="Year" required />',
-            'Courses <input name="password" type="text" placeholder="Courses" required />',
-            'Weeks <input name="password" type="text" placeholder="Weeks" required />',
-            'Learning Events <input name="password" type="text" placeholder="Event" required />',
-            'Tags <input name="tags" type="text" placeholder="Tags" required />'
+            '<label>Year</label> <input name="year" type="text" placeholder="Year" required />',
+            '<div>Current Year is: '+year+'</div>',
+            '<label>Cohort</label> <input name="cohort" type="text" placeholder="cohort" required />',
+            '<div>Current Cohort is: '+cohort,
+            '<label>Courses</label> <input name="courses" type="text" placeholder="Courses" required />',
+            '<div>Current Courses are: '+courses+'</div>',
+            '<label>Weeks</label> <input name="weeks" type="text" placeholder="Weeks" required />',
+            '<div>Current Weeks are: '+weeks+'</div>',
+            '<label>Learning Events</label> <input name="events" type="text" placeholder="Event" required />',
+            '<div>Current Events are: '+events+'</div>',
+            '<label>Tags</label> <input name="tags" type="text" placeholder="Add a tag" required />',
+            '<div>Current Tags are: '+tag+'</div>'
         ].join(''),
         buttons: [
             $.extend({}, vex.dialog.buttons.YES, { text: 'Save' }),
@@ -47,7 +61,14 @@ function listenForCourseClicks(elem){
             if (!data) {
                 console.log('Cancelled')
             } else {
-                console.log('Username', data.username, 'Password', data.password)
+                year    = data.year,
+                cohort  = data.cohort,
+                courses += data.courses,
+                weeks   += data.weeks,
+                events  += data.events,
+                tags    += data.tags;
+
+                console.log(year,courses,weeks,events,tags);
             }
         }
     })

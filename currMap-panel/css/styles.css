@@ -58,3 +58,13 @@ dt.item {
 dd.active{
 	background:#40B4E5;
 }
+.vex-dialog-input label{
+	display: block;
+}
+
+.vex-dialog-input div{
+	width:100%;
+	word-break: break-all;
+	word-break: word-break;
+	word-break: -ms-word-break;
+}
