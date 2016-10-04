@@ -8,9 +8,6 @@ $(document).ready(function(){
 
 function addListeners(elem){
   //select menu
-  $('.search').on("keyup",function(e){
-    filterList(e);
-  });
   $('#cohort-chooser').on('change',function(e){
     var cohort = $(this).val();
     filterCohort("class",cohort)
@@ -20,10 +17,13 @@ function addListeners(elem){
     filterCohort("year",cohort)
   });
   $('body').on('click', function(e){
+    // TODO: this is a bit buggy, it should have a cleaner implementation. Select and deselect active items
     clearFilter();
-    console.log("click");
   });
-  $('dd,dt,li').on('click', {event}, highlightRelated);
+  $('.search').on("keyup",function(e){
+    filterList(e);
+  });
+  $('li').on('click', {event}, highlightRelated);
   $('.btn-cal').on('click',function(e){
     e.stopPropagation();
     alert("This will allow you to filter the events based on date.")
@@ -128,7 +128,7 @@ function addActive(target,cohort) {
 function applyFilter(target,cohort) {
   var string = "(^|,)"+cohort+"(,|$)";
   var re = new RegExp(string,'g');
-  $('*[data-'+target+']').hide();
+  $('*[data-'+target+']').addClass("filtered-out");
   $('*[data-'+target+']')
     .filter( function(){
       if ( $(this).attr('data-'+target+'').match(re) ){
@@ -150,7 +150,7 @@ function hideElem(elem) {
 
 function clearFilter(){
   $('.active').removeClass("active");
-  $('li').slideDown().css('min-height','60px');
+  $('li').not('.filtered-out').slideDown().css('min-height','60px');
 }
 function filterList(e){
   // get the search box text and filter it's related list, set in in the data-type attribute of the search box

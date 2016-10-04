@@ -1,6 +1,9 @@
 ul{
 	padding:0;
 }
+.filtered-out{
+	display:none;
+}
 .bottom-spacing {
 	margin-bottom:12px;
 }
