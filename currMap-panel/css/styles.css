@@ -60,7 +60,7 @@ dd.item{
 }
 .info-container .nav-tabs>li>a:hover {
 	background:#97d4e9;
-	
+
 }
 #map1{
 	display:none;
@@ -69,7 +69,7 @@ dd.item{
 	height: 0;
 	visibility: 0;
 }
-.active {
+.content .active {
 	height:60px;
 	background:#40B4E5;
 	visibility: 1;
