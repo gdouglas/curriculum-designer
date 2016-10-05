@@ -91,15 +91,16 @@ function addListeners(elem){
   });
 }
 /*on course, week or learning event click match all items and add a active class*/
-
 function highlightRelated(e){
+  console.log("highlightRelated()");
+  //toggle the filter flag
   filterApplied = !filterApplied;
-  e.stopPropagation();
   var t = $(e.target).closest("li");
   var type = $(t).parent().data("type");
   var data = $(t).data();
 
   $(".active").removeClass("active");
+  /*filtered-out is used to hide elements from the text, year and layout filter*/
   $('li').not('.filtered-out').css('display','list-item');
   if (filterApplied) {
     // use type and check all data attributes for the type, then add active if the params match
@@ -121,25 +122,11 @@ function filterCohort(target, cohort) {
 
 }
 function addActive(target,cohort) {
-  console.log("add active",target);
-  var string = "(^|,)"+cohort+"(,|$)";
-  var re = new RegExp(string,'g');
-  $('*[data-'+target+']')
-    .filter( function(){
-      if ( $(this).attr('data-'+target+'').match(re) ){
-        //show if there is a match
-        return true;
-      } else {
-        //leave hiden if there is no match
-        return false;
-      }
-    })
-    .addClass("active");
-    hideElem($('li:not([class*="active"])'));
+  console.log("addActive()",$('*[data-'+target+']').closest("ul").find('li[data-'+target+'~="'+cohort+'"]'));
+  $('*[data-'+target+']').closest("ul").find('li[data-'+target+'~="'+cohort+'"]').addClass("active");
+  $('li:not([class*="active"])').hide();
 }
 function applyFilter(target,cohort) {
-  var string = "(^|,)"+cohort+"(,|$)";
-  var re = new RegExp(string,'g');
   $('*[data-'+target+']').addClass("filtered-out");
   $('*[data-'+target+']').closest("ul").find('li[data-'+target+'~="'+cohort+'"]').removeClass("filtered-out");
 }
