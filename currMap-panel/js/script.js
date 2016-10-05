@@ -1,3 +1,6 @@
+// flags
+var filterApplied = false;
+
 $(document).ready(function(){
   $('#currMapSwitcher').on('change', function(e){
     $('#maps div[id ^= "map"]').hide();
@@ -16,14 +19,10 @@ function addListeners(elem){
     var cohort = $(this).val();
     filterCohort("year",cohort)
   });
-  $('body').on('click', function(e){
-    // TODO: this is a bit buggy, it should have a cleaner implementation. Select and deselect active items
-    clearFilter();
-  });
   $('.search').on("keyup",function(e){
     filterList(e);
   });
-  $('li').on('click', {event}, highlightRelated);
+  $('li .glyphicon-filter').on('click', {event}, highlightRelated);
   $('.btn-cal').on('click',function(e){
     e.stopPropagation();
     alert("This will allow you to filter the events based on date.")
@@ -94,23 +93,25 @@ function addListeners(elem){
 /*on course, week or learning event click match all items and add a active class*/
 
 function highlightRelated(e){
+  filterApplied = !filterApplied;
   e.stopPropagation();
-  var t = e.target;
+  var t = $(e.target).closest("li");
   var type = $(t).parent().data("type");
   var data = $(t).data();
-  var arr = [];
-  $(".active").removeClass("active");
-  // console.log($(t).parent().data("type"),data);
 
-  // use type and check all data attributes for the type, then add active if the params match
-  var selected = $(t).data(type);
-  addActive(type,selected);
+  $(".active").removeClass("active");
+  $('li').not('.filtered-out').css('display','list-item');
+  if (filterApplied) {
+    // use type and check all data attributes for the type, then add active if the params match
+    var selected = $(t).data(type);
+    addActive(type,selected);
+  }
 }
 
 function filterCohort(target, cohort) {
   switch (cohort) {
     case "all":
-    $('*[data-'+target+']').show();
+    $('*[data-'+target+']').removeClass("filtered-out");
       return
     case "add":
       return
@@ -140,12 +141,7 @@ function applyFilter(target,cohort) {
   var string = "(^|,)"+cohort+"(,|$)";
   var re = new RegExp(string,'g');
   $('*[data-'+target+']').addClass("filtered-out");
-  // $('ul.year').find('li[data-year~="1"]').removeClass("filtered-out");
   $('*[data-'+target+']').closest("ul").find('li[data-'+target+'~="'+cohort+'"]').removeClass("filtered-out");
-  // $('ul.year').find('li[data-'+target+'~="'+cohort+'"]').css('display','list-item');
-  // $('*[data-year]').find('li[data-year~="1"]').show();//removeClass("filtered-out");
-  // $('ul.year').find('li[data-year~="1"]').removeClass("filtered-out");
-  // $('*[data-'+target+']').find('li[data-'+target+'~="'+cohort+'"]').addClass("fuck");
 }
 // Hide all non active elements and show the active ones
 // takes a jquery object
@@ -154,11 +150,6 @@ function hideElem(elem) {
   $(".active").css('display','list-item');
 }
 
-function clearFilter(){
-  console.log("clearFilter()");
-  // $('.active').removeClass("active");
-  // $('li').not('.filtered-out').css('display','list-item');
-}
 function filterList(e){
   // get the search box text and filter it's related list, set in in the data-type attribute of the search box
   var list = $(e.target).data("type");
