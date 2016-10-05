@@ -34,45 +34,56 @@ function addListeners(elem){
   });
   $('.glyphicon-wrench').on('click',function(e){
     e.stopPropagation();
-    console.log("click");
-    var year    = $(e.target).closest("li").data("year"),
-        cohort  = $(e.target).closest("li").data("class"),
-        courses = $(e.target).closest("li").data("course"),
-        weeks   = $(e.target).closest("li").data("week"),
-        events  = $(e.target).closest("li").data("event"),
-        tag     = $(e.target).closest("li").data("tag");
+    var item    = $(e.target).closest("li"),
+        year    = item.data("year"),
+        cohort  = item.data("class"),
+        courses = item.data("course"),
+        weeks   = item.data("week"),
+        events  = item.data("event"),
+        tag     = item.data("tag");
     vex.dialog.open({
         message: 'Set the linkages for this item here:',
         input: [
-            '<label>Year</label> <input name="year" type="text" placeholder="Year" required />',
+            '<label>Year</label> <input name="year" type="text" placeholder="Year"/>',
             '<div>Current Year is: '+year+'</div>',
-            '<label>Cohort</label> <input name="cohort" type="text" placeholder="cohort" required />',
+            '<label>Cohort</label> <input name="cohort" type="text" placeholder="cohort" />',
             '<div>Current Cohort is: '+cohort,
-            '<label>Courses</label> <input name="courses" type="text" placeholder="Courses" required />',
+            '<label>Courses</label> <input name="courses" type="text" placeholder="Courses"  />',
             '<div>Current Courses are: '+courses+'</div>',
-            '<label>Weeks</label> <input name="weeks" type="text" placeholder="Weeks" required />',
+            '<label>Weeks</label> <input name="weeks" type="text" placeholder="Weeks"  />',
             '<div>Current Weeks are: '+weeks+'</div>',
-            '<label>Learning Events</label> <input name="events" type="text" placeholder="Event" required />',
+            '<label>Learning Events</label> <input name="events" type="text" placeholder="Event"  />',
             '<div>Current Events are: '+events+'</div>',
-            '<label>Tags</label> <input name="tags" type="text" placeholder="Add a tag" required />',
+            '<label>Tags</label> <input name="tags" type="text" placeholder="Add a tag"  />',
             '<div>Current Tags are: '+tag+'</div>'
         ].join(''),
         buttons: [
-            $.extend({}, vex.dialog.buttons.YES, { text: 'Save' }),
-            $.extend({}, vex.dialog.buttons.NO, { text: 'Cancel' })
+            $.extend({}, vex.dialog.buttons.YES, { text: 'Done' }),
+            $.extend({}, vex.dialog.buttons.NO, { text: 'Exit' })
         ],
         callback: function (data) {
             if (!data) {
                 console.log('Cancelled')
             } else {
-                year    = data.year,
-                cohort  = data.cohort,
-                courses += data.courses,
-                weeks   += data.weeks,
-                events  += data.events,
-                tags    += data.tags;
-
-                console.log(year,courses,weeks,events,tags);
+              //user has opted to keep changes
+              // store values in an object
+              var values = {
+                year    : data.year,
+                cohort  : data.cohort,
+                courses : data.courses,
+                weeks   : data.weeks,
+                events  : data.events,
+                tag     : data.tag };
+                // loop through stored values and update the item
+                for (var key in values) {
+                  if (values.hasOwnProperty(key)){
+                    if (values[key] != undefined){
+                      //set the data and the attribute so other filtering functions work, update reference in memory and the dom
+                      $.data(item,key,values[key]);
+                      $(item).attr('data-'+key,values[key]);
+                    }
+                  }
+                }
             }
         }
     })
@@ -109,9 +120,9 @@ function filterCohort(target, cohort) {
 
 }
 function addActive(target,cohort) {
+  console.log("add active",target);
   var string = "(^|,)"+cohort+"(,|$)";
   var re = new RegExp(string,'g');
-  console.log(target);
   $('*[data-'+target+']')
     .filter( function(){
       if ( $(this).attr('data-'+target+'').match(re) ){
@@ -129,28 +140,24 @@ function applyFilter(target,cohort) {
   var string = "(^|,)"+cohort+"(,|$)";
   var re = new RegExp(string,'g');
   $('*[data-'+target+']').addClass("filtered-out");
-  $('*[data-'+target+']')
-    .filter( function(){
-      if ( $(this).attr('data-'+target+'').match(re) ){
-        //show if there is a match
-        return true;
-      } else {
-        //leave hiden if there is no match
-        return false;
-      }
-    })
-    .show().addClass("active");
+  // $('ul.year').find('li[data-year~="1"]').removeClass("filtered-out");
+  $('*[data-'+target+']').closest("ul").find('li[data-'+target+'~="'+cohort+'"]').removeClass("filtered-out");
+  // $('ul.year').find('li[data-'+target+'~="'+cohort+'"]').css('display','list-item');
+  // $('*[data-year]').find('li[data-year~="1"]').show();//removeClass("filtered-out");
+  // $('ul.year').find('li[data-year~="1"]').removeClass("filtered-out");
+  // $('*[data-'+target+']').find('li[data-'+target+'~="'+cohort+'"]').addClass("fuck");
 }
 // Hide all non active elements and show the active ones
 // takes a jquery object
 function hideElem(elem) {
-  elem.css('min-height','0').slideUp();
-  $(".active").css('min-height','60px').slideDown();
+  elem.css('display','none');
+  $(".active").css('display','list-item');
 }
 
 function clearFilter(){
-  $('.active').removeClass("active");
-  $('li').not('.filtered-out').slideDown().css('min-height','60px');
+  console.log("clearFilter()");
+  // $('.active').removeClass("active");
+  // $('li').not('.filtered-out').css('display','list-item');
 }
 function filterList(e){
   // get the search box text and filter it's related list, set in in the data-type attribute of the search box
@@ -159,9 +166,9 @@ function filterList(e){
   $("."+list+" li").each(function(){
     dis = $(this);
     if (dis.text().toLowerCase().search(value) > -1){
-      dis.show();
+      dis.removeClass("filtered-out");
     } else {
-      dis.hide();
+      dis.addClass("filtered-out");
     }
   });
 }
