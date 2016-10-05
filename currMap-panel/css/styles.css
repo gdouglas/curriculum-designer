@@ -17,6 +17,16 @@ ul{
 	margin-bottom:3px;
 	cursor: pointer;
 }
+.cancel:after {
+	content: '';
+	width:2px;
+	height:20px;
+	position: absolute;
+	top:-4px;
+	right: 5px;
+	transform: rotate(45deg);
+	background:red;
+}
 dd.item{
 	background: rgba(12,35,68,.1);
 	width:50%;
@@ -34,6 +44,9 @@ dd.item{
 .selected {
 	border:1px solid red;
 }
+.primary {
+	border:2px solid green;
+}
 .event .btn-plus{
 	display:none;
 }
@@ -41,7 +54,14 @@ dd.item{
 	background:#4084e5;
 	padding:5px;
 }
-
+.info-container .nav-tabs>li>a {
+	border-color: #fff;
+	color:#fff;
+}
+.info-container .nav-tabs>li>a:hover {
+	background:#97d4e9;
+	
+}
 #map1{
 	display:none;
 }

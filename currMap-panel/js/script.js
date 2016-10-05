@@ -19,94 +19,151 @@ function addListeners(elem){
     var cohort = $(this).val();
     filterCohort("year",cohort)
   });
+  $('.nav-tabs a').click(function(){
+      // $(this).tab('show');
+      console.log(this);
+  })
+  //search menues
   $('.search').on("keyup",function(e){
     filterList(e);
   });
+  //text filter
   $('li .glyphicon-filter').on('click', {event}, highlightRelated);
+  //item controls
   $('.btn-cal').on('click',function(e){
     e.stopPropagation();
-    alert("This will allow you to filter the events based on date.")
+   vex.dialog.alert("This will allow you to filter the events based on date.")
   });
   $('.btn-plus').on('click',function(e){
     e.stopPropagation();
-    alert("This will allow you to add a new item to the list below. I'm not sure what we need to capture in here besige title.")
+    vex.dialog.prompt({
+      message: "This will allow you to add a new item to the list below. I'm not sure what we need to capture in here beside title.",
+      placeholder: 'Course Title',
+      callback: function (value) {
+        console.log(value);
+      }
+    });
   });
-  $('.glyphicon-wrench').on('click',function(e){
-    e.stopPropagation();
-    var item    = $(e.target).closest("li"),
-        year    = item.data("year"),
-        cohort  = item.data("class"),
-        courses = item.data("course"),
-        weeks   = item.data("week"),
-        events  = item.data("event"),
-        tag     = item.data("tag");
-    vex.dialog.open({
-        message: 'Set the linkages for this item here:',
-        input: [
-            '<label>Year</label> <input name="year" type="text" placeholder="Year"/>',
-            '<div>Current Year is: '+year+'</div>',
-            '<label>Cohort</label> <input name="cohort" type="text" placeholder="cohort" />',
-            '<div>Current Cohort is: '+cohort,
-            '<label>Courses</label> <input name="courses" type="text" placeholder="Courses"  />',
-            '<div>Current Courses are: '+courses+'</div>',
-            '<label>Weeks</label> <input name="weeks" type="text" placeholder="Weeks"  />',
-            '<div>Current Weeks are: '+weeks+'</div>',
-            '<label>Learning Events</label> <input name="events" type="text" placeholder="Event"  />',
-            '<div>Current Events are: '+events+'</div>',
-            '<label>Tags</label> <input name="tags" type="text" placeholder="Add a tag"  />',
-            '<div>Current Tags are: '+tag+'</div>'
-        ].join(''),
-        buttons: [
-            $.extend({}, vex.dialog.buttons.YES, { text: 'Done' }),
-            $.extend({}, vex.dialog.buttons.NO, { text: 'Exit' })
-        ],
-        callback: function (data) {
-            if (!data) {
-                console.log('Cancelled')
-            } else {
-              //user has opted to keep changes
-              // store values in an object
-              var values = {
-                year    : data.year,
-                cohort  : data.cohort,
-                courses : data.courses,
-                weeks   : data.weeks,
-                events  : data.events,
-                tag     : data.tag };
-                // loop through stored values and update the item
-                for (var key in values) {
-                  if (values.hasOwnProperty(key)){
-                    if (values[key] != undefined){
-                      //set the data and the attribute so other filtering functions work, update reference in memory and the dom
-                      $.data(item,key,values[key]);
-                      $(item).attr('data-'+key,values[key]);
-                    }
+  //item settings
+  $('.glyphicon-wrench').on('click',{event}, itemSettings);
+  //item click
+  $(".content li").on('click',{event},itemClick);
+}
+
+//get the item and build the info panel in the header
+function itemClick(e) {
+  e.preventDefault();
+  var t = $(e.target).closest("li");
+  var type = getType(t);
+  // show item as selected, max 2 items can be selected at a time
+  if ($(e.currentTarget).hasClass("selected")){
+    $(e.currentTarget).removeClass("selected primary");
+    updateInfoPanel();
+    return;
+  }
+  if ($(".selected").length>1){
+    vex.dialog.alert("only two items can be selected");
+  } else if ($(".selected").length>0) {
+    t.addClass("selected");
+    updateInfoPanel();
+  } else {
+    t.addClass("selected");
+    var item = $(".selected")[0];
+    $(item).addClass("primary");
+    updateInfoPanel();
+  }
+}
+function updateInfoPanel() {
+  showPanel();
+
+}
+function showPanel(){
+  if ($(".selected").length>0){
+    console.log("updateInfoPanel()");
+    $(".info-container").removeClass("hidden");
+    return;
+  } else {
+    $(".info-container").addClass("hidden");
+  }
+}
+function itemSettings(e){
+  e.stopPropagation();
+  var item    = $(e.target).closest("li"),
+      year    = item.attr("data-year"),
+      cohort  = item.data("class"),
+      courses = item.data("course"),
+      weeks   = item.data("week"),
+      events  = item.data("event"),
+      tag     = item.data("tag");
+  vex.dialog.open({
+      message: 'Set the linkages for this item here:',
+      input: [
+          '<label>Year</label> <input name="year" type="text" placeholder="Year"/>',
+          '<div>Current Year is: '+year+'</div>',
+          '<label>Cohort</label> <input name="cohort" type="text" placeholder="cohort" />',
+          '<div>Current Cohort is: '+cohort,
+          '<label>Courses</label> <input name="courses" type="text" placeholder="Courses"  />',
+          '<div>Current Courses are: '+courses+'</div>',
+          '<label>Weeks</label> <input name="weeks" type="text" placeholder="Weeks"  />',
+          '<div>Current Weeks are: '+weeks+'</div>',
+          '<label>Learning Events</label> <input name="events" type="text" placeholder="Event"  />',
+          '<div>Current Events are: '+events+'</div>',
+          '<label>Tags</label> <input name="tags" type="text" placeholder="Add a tag"  />',
+          '<div>Current Tags are: '+tag+'</div>'
+      ].join(''),
+      buttons: [
+          $.extend({}, vex.dialog.buttons.YES, { text: 'Done' }),
+          $.extend({}, vex.dialog.buttons.NO, { text: 'Exit' })
+      ],
+      callback: function (data) {
+          if (!data) {
+              console.log('Cancelled')
+          } else {
+            //user has opted to keep changes
+            // store values in an object
+            var values = {
+              year    : data.year,
+              cohort  : data.cohort,
+              courses : data.courses,
+              weeks   : data.weeks,
+              events  : data.events,
+              tag     : data.tag };
+              // loop through stored values and update the item
+              for (var key in values) {
+                if (values.hasOwnProperty(key)){
+                  if (values[key] != undefined){
+                    console.log("get",item.data());
+                    //set the data and the attribute so other filtering functions work, update reference in memory and the dom
+                    $(item).attr('data-'+key,values[key]);
+                    $(item).data(key,values[key]);
                   }
                 }
-            }
-        }
-    })
-
-
-  });
-}
+              }
+          }
+      }
+  })
+};
 /*on course, week or learning event click match all items and add a active class*/
 function highlightRelated(e){
   console.log("highlightRelated()");
   //toggle the filter flag
   filterApplied = !filterApplied;
   var t = $(e.target).closest("li");
-  var type = $(t).parent().data("type");
+  var type = getType(t);
   var data = $(t).data();
 
-  $(".active").removeClass("active");
-  /*filtered-out is used to hide elements from the text, year and layout filter*/
+  $(".active, .cancel").removeClass("active cancel");
+  /*filtered-out class is used to hide elements from the text, year and layout filter*/
   $('li').not('.filtered-out').css('display','list-item');
   if (filterApplied) {
     // use type and check all data attributes for the type, then add active if the params match
     var selected = $(t).data(type);
     addActive(type,selected);
   }
+}
+/*get the parent type, needs an li*/
+function getType(target){
+  return $(target).parent().data("type");
 }
 
 function filterCohort(target, cohort) {
@@ -122,8 +179,9 @@ function filterCohort(target, cohort) {
 
 }
 function addActive(target,cohort) {
-  console.log("addActive()",$('*[data-'+target+']').closest("ul").find('li[data-'+target+'~="'+cohort+'"]'));
+  console.log("addActive()");
   $('*[data-'+target+']').closest("ul").find('li[data-'+target+'~="'+cohort+'"]').addClass("active");
+  $(".active .glyphicon-filter").addClass('cancel');
   $('li:not([class*="active"])').hide();
 }
 function applyFilter(target,cohort) {
