@@ -47,6 +47,9 @@ dd.item{
 .primary {
 	border:2px solid green;
 }
+.secondary {
+	border:2px solid #0055b7;
+}
 .event .btn-plus{
 	display:none;
 }
@@ -60,7 +63,13 @@ dd.item{
 }
 .info-container .nav-tabs>li>a:hover {
 	background:#97d4e9;
-
+	color:black;
+}
+.tab-content {
+	background: #97d4e9;
+	min-height: 76px;
+	padding:10px;
+	box-sizing: border-box;
 }
 #map1{
 	display:none;

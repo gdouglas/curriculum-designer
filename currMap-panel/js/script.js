@@ -19,10 +19,6 @@ function addListeners(elem){
     var cohort = $(this).val();
     filterCohort("year",cohort)
   });
-  $('.nav-tabs a').click(function(){
-      // $(this).tab('show');
-      console.log(this);
-  })
   //search menues
   $('.search').on("keyup",function(e){
     filterList(e);
@@ -57,14 +53,19 @@ function itemClick(e) {
   var type = getType(t);
   // show item as selected, max 2 items can be selected at a time
   if ($(e.currentTarget).hasClass("selected")){
-    $(e.currentTarget).removeClass("selected primary");
+    $(e.currentTarget).removeClass("selected primary secondary");
+    updateClasses();
     updateInfoPanel();
     return;
+  } else if ($("."+type+ " li").hasClass("selected")){
+    console.log(type);
+    updateClasses();
+    $(".secondary").removeClass("secondary").addClass("primary");
   }
   if ($(".selected").length>1){
-    vex.dialog.alert("only two items can be selected");
+    vex.dialog.alert("Only two items can be selected. Please unselect an item. note- this should have a button to deselect one of the items");
   } else if ($(".selected").length>0) {
-    t.addClass("selected");
+    t.addClass("selected secondary");
     updateInfoPanel();
   } else {
     t.addClass("selected");
@@ -73,9 +74,35 @@ function itemClick(e) {
     updateInfoPanel();
   }
 }
+function updateClasses() {
+  $(".secondary").removeClass("secondary").addClass("primary");
+}
 function updateInfoPanel() {
-  showPanel();
+  //get data based on class elements
+  var primaryData = $('.primary').data(),
+      secondaryData = $('.secondary').data();
+  //format data for presentation
+  var primaryContent = getContent(primaryData);
+  secondaryContent = getContent(secondaryData);
 
+  //add data to the DOM
+  $('#item1').html(primaryContent);
+  $('#item2').html(secondaryContent);
+  //reveal the panel
+  showPanel();
+}
+
+function getContent(t) {
+  if (t != undefined){
+    return t =
+      '<div class="info-panel-item"><label>Year is: &nbsp;</label><span class="info-panel-item-atom">'+t.year+'</span></div>'+
+      '<div class="info-panel-item"><label>Cohort is:&nbsp; </label><span class="info-panel-item-atom">'+t.class+'</span></div>'+
+      '<div class="info-panel-item"><label>Courses are:&nbsp; </label><span class="info-panel-item-atom">'+t.course+'</span></div>'+
+      '<div class="info-panel-item"><label>weeks are:&nbsp; </label><span class="info-panel-item-atom">'+t.week+'</span></div>'+
+      '<div class="info-panel-item"><label>Learning Events are:&nbsp; </label><span class="info-panel-item-atom">'+t.event;'</span></div>';
+  } else {
+    return t = '<div class="info-panel-item">Please Make a selection</div>';
+  }
 }
 function showPanel(){
   if ($(".selected").length>0){
