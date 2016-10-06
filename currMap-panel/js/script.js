@@ -177,20 +177,22 @@ function highlightRelated(e){
   var t = $(e.target).closest("li");
   var type = getType(t);
   var data = $(t).data();
-  // get all types and loop through them.
-  $('ul[data-type]').each(getRelated);
-
+  // remove active classes
   $(".active, .cancel").removeClass("active cancel");
-  /*filtered-out class is used to hide elements from the text, year and layout filter*/
+  // get all types and loop through them.
+  $('ul[data-type]').each( function(){
+    getRelated(t,type,data)
+  });
+}
+function getRelated(t,type,data) {
+
   $('li').not('.filtered-out').css('display','list-item');
   if (filterApplied) {
     // use type and check all data attributes for the type, then add active if the params match
     var selected = $(t).data(type);
     addActive(type,selected);
   }
-}
-function getRelated() {
-  console.log(this);
+
 }
 /*get the parent type, needs an li*/
 function getType(target){
