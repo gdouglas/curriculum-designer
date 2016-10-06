@@ -12,10 +12,11 @@ ul{
 	border: 1px solid;
 	text-align: left;
 	list-style-type: none;
-	padding:10px 10px 0 10px;
+	padding:10px 50px 0 10px;
 	min-height:60px;
 	margin-bottom:3px;
 	cursor: pointer;
+	position: relative;
 }
 .cancel:after {
 	content: '';
@@ -26,12 +27,6 @@ ul{
 	right: 5px;
 	transform: rotate(45deg);
 	background:red;
-}
-dd.item{
-	background: rgba(12,35,68,.1);
-	width:50%;
-	display:inline-block;
-	float:left;
 }
 .glyphicon-new-window {
 	color:#97d4e9;
@@ -57,6 +52,12 @@ dd.item{
 	background:#4084e5;
 	padding:5px;
 }
+.item-controls {
+	display:inline-block;
+	position: absolute;
+	right: 9px;
+	top: 9px;
+}
 .info-container .nav-tabs>li>a {
 	border-color: #fff;
 	color:#fff;
@@ -74,29 +75,14 @@ dd.item{
 #map1{
 	display:none;
 }
-.hiden{
-	height: 0;
-	visibility: 0;
-}
 .content .active {
 	height:60px;
 	background:#40B4E5;
 	visibility: 1;
 }
-dt.item {
-	margin-bottom:0;
-	clear:both;
-}
-.events dd{
-	width:100%;
-}
-dd.active{
-	background:#40B4E5;
-}
 .vex-dialog-input label{
 	display: block;
 }
-
 .vex-dialog-input div{
 	width:100%;
 	word-break: break-all;

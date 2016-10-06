@@ -159,7 +159,6 @@ function itemSettings(e){
               for (var key in values) {
                 if (values.hasOwnProperty(key)){
                   if (values[key] != undefined){
-                    console.log("get",item.data());
                     //set the data and the attribute so other filtering functions work, update reference in memory and the dom
                     $(item).attr('data-'+key,values[key]);
                     $(item).data(key,values[key]);
@@ -172,12 +171,14 @@ function itemSettings(e){
 };
 /*on course, week or learning event click match all items and add a active class*/
 function highlightRelated(e){
-  console.log("highlightRelated()");
+  // Doesn't really work as expected. Should loop through each UL and add the active class to the related items. Currently just looks for itself and applies.
   //toggle the filter flag
   filterApplied = !filterApplied;
   var t = $(e.target).closest("li");
   var type = getType(t);
   var data = $(t).data();
+  // get all types and loop through them.
+  $('ul[data-type]').each(getRelated);
 
   $(".active, .cancel").removeClass("active cancel");
   /*filtered-out class is used to hide elements from the text, year and layout filter*/
@@ -188,11 +189,15 @@ function highlightRelated(e){
     addActive(type,selected);
   }
 }
+function getRelated() {
+  console.log(this);
+}
 /*get the parent type, needs an li*/
 function getType(target){
   return $(target).parent().data("type");
 }
 
+//filter fron dropdowns
 function filterCohort(target, cohort) {
   switch (cohort) {
     case "all":
@@ -206,7 +211,6 @@ function filterCohort(target, cohort) {
 
 }
 function addActive(target,cohort) {
-  console.log("addActive()");
   $('*[data-'+target+']').closest("ul").find('li[data-'+target+'~="'+cohort+'"]').addClass("active");
   $(".active .glyphicon-filter").addClass('cancel');
   $('li:not([class*="active"])').hide();
